@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +27,8 @@ public class CategoryService {
 
     public ResponseEntity<Category> findCategoryById(Long id) {
         Optional<Category> category = categoryRepo.findById(id);
-        if(!category.isPresent())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Category savedCategory = category.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not found"));
 
         return new ResponseEntity<>(category.get(), HttpStatus.OK);
     }
@@ -37,22 +38,20 @@ public class CategoryService {
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<Category> updateCategory(Long categoryId, Category category) {
+    public Category updateCategory(Long categoryId, Category category) {
         Optional<Category> categoryOptional = categoryRepo.findById(categoryId);
-        if(!categoryOptional.isPresent())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        Category categoryUpdated = categoryOptional.get();
-        categoryUpdated.setCategoryName(category.getCategoryName());
-        categoryRepo.save(categoryUpdated);
-        return new ResponseEntity<>(categoryUpdated, HttpStatus.OK);
+        Category savedCategory = categoryOptional.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not found"));
+
+        savedCategory.setCategoryName(category.getCategoryName());
+        categoryRepo.save(savedCategory);
+        return savedCategory;
     }
 
-    public ResponseEntity<Category> deleteCategory(Long categoryId) {
+    public String deleteCategory(Long categoryId) {
         Optional<Category> categoryOptional = categoryRepo.findById(categoryId);
-        if(!categoryOptional.isPresent())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Category savedCategory = categoryOptional.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not found"));
 
         categoryRepo.deleteById(categoryId);
-        return new ResponseEntity<>(categoryOptional.get(), HttpStatus.OK);
+        return "Category with catrgoryId "+categoryId+" deleted successfully";
     }
 }

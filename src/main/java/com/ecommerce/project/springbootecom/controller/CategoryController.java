@@ -2,6 +2,7 @@ package com.ecommerce.project.springbootecom.controller;
 
 import com.ecommerce.project.springbootecom.model.Category;
 import com.ecommerce.project.springbootecom.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,17 +27,17 @@ public class CategoryController {
     }
 
     @PostMapping("categories")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
         return categoryService.addCategory(category);
     }
 
     @PutMapping("categories/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
+    public Category updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
         return categoryService.updateCategory(categoryId,category);
     }
 
     @DeleteMapping("categories/{categoryId}")
-    public ResponseEntity<Category> deleteCategory(@PathVariable Long categoryId) {
+    public String deleteCategory(@PathVariable Long categoryId) {
         return categoryService.deleteCategory(categoryId);
     }
 

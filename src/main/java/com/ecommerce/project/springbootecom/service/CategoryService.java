@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface CategoryService {
-    public CategoryResponse findAllCategories();
+    public CategoryResponse findAllCategories(int pageNum, int pageSize,String sortBy,String order);
     public CategoryDTO findCategoryById(Long categoryId);
     public CategoryDTO addCategory(CategoryDTO categoryDTO);
     public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO);
